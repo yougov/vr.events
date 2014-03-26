@@ -23,6 +23,7 @@ for message in listener:
 
 import json
 import uuid
+import itertools
 
 import six
 import redis
@@ -116,6 +117,9 @@ class Listener(object):
             sender = Sender(self.rcon, channel, buffer_key=None)
             sender.flush()
 
+    def _not_seen(self, event):
+        return json.loads(event)['id'] != self.last_event_id
+
     def get_buffer(self):
         # Only return anything from buffer if we've been given a last event ID
         if not self.buffer_key:
@@ -123,20 +127,12 @@ class Listener(object):
 
         buffered_events = self.rcon.lrange(self.buffer_key, 0, -1)
 
-        # check whether msg with last_event_id is still in buffer.  If so,
-        # trim buffered_events to have only newer messages.
-        if self.last_event_id:
-            # Note that we're looping through most recent messages first,
-            # here
-            counter = 0
-            for msg in buffered_events:
-                if (json.loads(msg)['id'] == self.last_event_id):
-                    break
-                counter += 1
-            buffered_events = buffered_events[:counter]
+        # loop over events, most recent first, and stop if the
+        # 'last_event_id' is encountered.
+        new_events = itertools.takewhile(self._not_seen, buffered_events)
 
         # Return oldest messages first
-        return reversed(list(buffered_events))
+        return reversed(list(new_events))
 
     def format(self, data, msgid=None, retry=None, event=None):
 
