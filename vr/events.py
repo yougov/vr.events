@@ -71,7 +71,7 @@ class Sender(object):
         self.rcon.connection_pool.disconnect()
 
 
-class Listener(object):
+class SimpleListener(object):
     def __init__(self, rcon_or_url, channels, buffer_key=None,
                  last_event_id=None):
         if isinstance(rcon_or_url, redis.StrictRedis):
@@ -87,24 +87,15 @@ class Listener(object):
         self.ping()
 
     def __iter__(self):
-        # If we've been initted with a buffer key, then get all the events off
-        # that and spew them out before blocking on the pubsub.
-
-        for parsed in self.get_buffer():
-            # account for earlier version that used 'message'
-            data = parsed.get('data') or parsed.get('message')
-            yield self.format(data, msgid=parsed['id'],
-                              event=parsed.get('event'))
-
-        for msg in self.messages:
-            # pubsub msg will be a dict with keys 'pattern', 'type', 'channel',
-            # and 'data'
-            if msg['data'] == 'flush':
-                yield ':\n'
-            else:
-                parsed = json.loads(msg['data'])
-                yield self.format(parsed['data'], msgid=parsed['id'],
-                                  event=parsed.get('event'))
+        """
+        Yield all messages that are not flush messages
+        """
+        new_events = (
+            json.loads(msg['data'])
+            for msg in self.messages
+            if msg['data'] != 'flush'
+        )
+        return itertools.chain(self.get_buffer(), new_events)
 
     @property
     def messages(self):
@@ -143,6 +134,33 @@ class Listener(object):
         # Return oldest messages first
         return reversed(list(new_events))
 
+    def close(self):
+        self.rcon.connection_pool.disconnect()
+
+
+class Listener(object):
+    "Listener with formatted messages"
+
+    def __iter__(self):
+        # If we've been initted with a buffer key, then get all the events off
+        # that and spew them out before blocking on the pubsub.
+
+        for parsed in self.get_buffer():
+            # account for earlier version that used 'message'
+            data = parsed.get('data') or parsed.get('message')
+            yield self.format(data, msgid=parsed['id'],
+                              event=parsed.get('event'))
+
+        for msg in self.messages:
+            # pubsub msg will be a dict with keys 'pattern', 'type', 'channel',
+            # and 'data'
+            if msg['data'] == 'flush':
+                yield ':\n'
+            else:
+                parsed = json.loads(msg['data'])
+                yield self.format(parsed['data'], msgid=parsed['id'],
+                                  event=parsed.get('event'))
+
     def format(self, data, msgid=None, retry=None, event=None):
 
         out = ''
@@ -162,6 +180,3 @@ class Listener(object):
             out += '\n'.join('data: %s' % l for l in data) + '\n'
         out += '\n'
         return out
-
-    def close(self):
-        self.rcon.connection_pool.disconnect()
