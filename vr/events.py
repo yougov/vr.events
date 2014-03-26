@@ -126,9 +126,11 @@ class Listener(object):
 
         buffered_events = self.rcon.lrange(self.buffer_key, 0, -1)
 
+        decoded = (event.decode('utf-8') for event in buffered_events)
+
         # loop over events, most recent first, and stop if the
         # 'last_event_id' is encountered.
-        new_events = itertools.takewhile(self._not_seen, buffered_events)
+        new_events = itertools.takewhile(self._not_seen, decoded)
 
         # Return oldest messages first
         return reversed(list(new_events))
