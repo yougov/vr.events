@@ -121,7 +121,6 @@ class Listener(object):
         return json.loads(event)['id'] != self.last_event_id
 
     def get_buffer(self):
-        # Only return anything from buffer if we've been given a last event ID
         if not self.buffer_key:
             return []
 
