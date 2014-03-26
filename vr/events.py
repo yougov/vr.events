@@ -96,16 +96,22 @@ class Listener(object):
             yield self.format(data, msgid=parsed['id'],
                               event=parsed.get('event'))
 
-        for msg in self.pubsub.listen():
+        for msg in self.messages:
             # pubsub msg will be a dict with keys 'pattern', 'type', 'channel',
             # and 'data'
-            if msg['type'] == 'message':
-                if msg['data'] == 'flush':
-                    yield ':\n'
-                else:
-                    parsed = json.loads(msg['data'])
-                    yield self.format(parsed['data'], msgid=parsed['id'],
-                                      event=parsed.get('event'))
+            if msg['data'] == 'flush':
+                yield ':\n'
+            else:
+                parsed = json.loads(msg['data'])
+                yield self.format(parsed['data'], msgid=parsed['id'],
+                                  event=parsed.get('event'))
+
+    @property
+    def messages(self):
+        return (
+            msg for msg in self.pubsub.listen()
+            if msg['type'] == 'message'
+        )
 
     def ping(self):
         # Send a superfluous message down the pubsub to flush out stale
