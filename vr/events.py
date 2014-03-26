@@ -90,8 +90,7 @@ class Listener(object):
         # If we've been initted with a buffer key, then get all the events off
         # that and spew them out before blocking on the pubsub.
 
-        for msg in self.get_buffer():
-            parsed = json.loads(msg)
+        for parsed in self.get_buffer():
             # account for earlier version that used 'message'
             data = parsed.get('data') or parsed.get('message')
             yield self.format(data, msgid=parsed['id'],
@@ -118,7 +117,7 @@ class Listener(object):
             sender.flush()
 
     def _not_seen(self, event):
-        return json.loads(event)['id'] != self.last_event_id
+        return event['id'] != self.last_event_id
 
     def get_buffer(self):
         if not self.buffer_key:
@@ -126,7 +125,10 @@ class Listener(object):
 
         buffered_events = self.rcon.lrange(self.buffer_key, 0, -1)
 
-        decoded = (event.decode('utf-8') for event in buffered_events)
+        decoded = (
+            json.loads(event.decode('utf-8'))
+            for event in buffered_events
+        )
 
         # loop over events, most recent first, and stop if the
         # 'last_event_id' is encountered.
