@@ -17,6 +17,11 @@ setup_params = dict(
 	url="https://bitbucket.org/jaraco/vr.events",
 	packages=setuptools.find_packages(),
 	namespace_packages=['vr'],
+	install_requires=[
+		'vr.common',
+		'six',
+		'redis',
+	],
 	setup_requires=[
 		'hgtools',
 	],
