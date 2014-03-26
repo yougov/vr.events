@@ -97,10 +97,15 @@ class SimpleListener(object):
         )
         return itertools.chain(self.get_buffer(), new_events)
 
+    @staticmethod
+    def decode_data(msg):
+        msg['data'] = msg['data'].decode('utf-8')
+        return msg
+
     @property
     def messages(self):
         return (
-            msg for msg in self.pubsub.listen()
+            self.decode_data(msg) for msg in self.pubsub.listen()
             if msg['type'] == 'message'
         )
 
