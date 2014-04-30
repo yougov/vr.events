@@ -24,6 +24,11 @@ setup_params = dict(
 	],
 	setup_requires=[
 		'hgtools',
+		'pytest-runner',
+	],
+	tests_require=[
+		'pytest',
+		'mock',
 	],
 )
 if __name__ == '__main__':
