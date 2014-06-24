@@ -9,9 +9,9 @@ with open('CHANGES.txt') as changes:
 
 setup_params = dict(
     name='vr.events',
-    use_hg_version=True,
-    author="Jason R. Coombs",
-    author_email="jaraco@jaraco.com",
+    version='1.1.1',
+    author="YouGov, Plc.",
+    author_email="dev@yougov.com",
     description="vr.events",
     long_description=long_description,
     url="https://bitbucket.org/jaraco/vr.events",
@@ -23,7 +23,6 @@ setup_params = dict(
         'redis',
     ],
     setup_requires=[
-        'hgtools',
         'pytest-runner',
     ],
     tests_require=[
