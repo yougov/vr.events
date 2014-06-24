@@ -143,7 +143,7 @@ class SimpleListener(object):
         self.rcon.connection_pool.disconnect()
 
 
-class Listener(object):
+class Listener(SimpleListener):
     "Listener with formatted messages"
 
     def __iter__(self):
