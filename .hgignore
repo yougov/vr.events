@@ -1,5 +1,6 @@
 syntax: glob
-*.pyc
+*.py[cdo]
+*egg-info*
 *.swp
 *.swo
 *~
@@ -30,5 +31,4 @@ tmp/
 celeryev.pid
 celerybeat-schedule
 celerybeat.pid
-*egg-info*
 TODO
