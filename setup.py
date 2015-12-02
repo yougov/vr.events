@@ -7,7 +7,7 @@ with open('CHANGES.txt') as changes:
 
 setup_params = dict(
     name='vr.events',
-    version='1.1.3',
+    version='1.2.0',
     author="YouGov, Plc.",
     author_email="dev@yougov.com",
     description="vr.events",
@@ -16,7 +16,7 @@ setup_params = dict(
     packages=setuptools.find_packages(),
     namespace_packages=['vr'],
     install_requires=[
-        'vr.common',
+        'vr.common>=4.3.0',
         'six',
         'redis',
     ],
