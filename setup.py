@@ -7,7 +7,7 @@ with open('CHANGES.txt') as changes:
 
 setup_params = dict(
     name='vr.events',
-    version='1.2.0',
+    version='1.2.1',
     author="YouGov, Plc.",
     author_email="dev@yougov.com",
     description="vr.events",
