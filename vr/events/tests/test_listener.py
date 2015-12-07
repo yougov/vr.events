@@ -1,7 +1,6 @@
 """Unit tests for :class:`vr.events.Listener`."""
 import unittest
-
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from vr.events import Listener
 
