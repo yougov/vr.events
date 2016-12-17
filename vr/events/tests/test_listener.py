@@ -8,7 +8,7 @@ class MockRedis(MagicMock):
     pass
 
 
-class ListenerTestCase:
+class TestListener:
 
     def test_create_listener(self):
         with patch('redis.StrictRedis', MockRedis):
