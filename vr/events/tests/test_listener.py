@@ -5,7 +5,10 @@ from vr.events import Listener
 
 
 class MockRedis(MagicMock):
-    pass
+
+    @classmethod
+    def from_url(cls, url):
+        return cls()
 
 
 class TestListener:

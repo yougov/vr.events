@@ -2,3 +2,5 @@
 .eggs/
 *.egg-info/
 TAGS
+.tox/
+.pytest_cache/
