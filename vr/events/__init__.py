@@ -28,8 +28,6 @@ import itertools
 import six
 import redis
 
-from vr.common import utils
-
 
 class Sender(object):
     def __init__(self, rcon_or_url, channel, buffer_key=None,
@@ -37,7 +35,7 @@ class Sender(object):
         if isinstance(rcon_or_url, redis.StrictRedis):
             self.rcon = rcon_or_url
         elif isinstance(rcon_or_url, six.string_types):
-            self.rcon = redis.StrictRedis(**utils.parse_redis_url(rcon_or_url))
+            self.rcon = redis.StrictRedis.from_url(rcon_or_url)
         self.channel = channel
         self.buffer_key = buffer_key
         self.buffer_length = buffer_length
@@ -77,7 +75,7 @@ class SimpleListener(object):
         if isinstance(rcon_or_url, redis.StrictRedis):
             self.rcon = rcon_or_url
         elif isinstance(rcon_or_url, six.string_types):
-            self.rcon = redis.StrictRedis(**utils.parse_redis_url(rcon_or_url))
+            self.rcon = redis.StrictRedis.from_url(rcon_or_url)
         self.channels = channels
         self.buffer_key = buffer_key
         self.last_event_id = last_event_id

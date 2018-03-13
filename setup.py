@@ -30,7 +30,7 @@ setup_params = dict(
     install_requires=[
         'vr.common>=4.3.0',
         'six',
-        'redis',
+        'redis>=2.4.13',
     ],
     extras_require={
     },
