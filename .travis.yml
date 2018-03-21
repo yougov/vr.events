@@ -6,25 +6,33 @@ python:
 - 2.7
 - &latest_py3 3.6
 
-install:
-- pip install tox "setuptools>=28.2"
-script:
-- tox
-branches:
-  except:
-  - skeleton
-deploy:
-  provider: pypi
-  server: https://upload.pypi.org/legacy/
-  on:
-    tags: true
-    all_branches: true
+jobs:
+  fast_finish: true
+  include:
+  - stage: deploy
+    if: tag IS present
     python: *latest_py3
-  user: jaraco
-  distributions: dists
-  skip_upload_docs: true
-  password:
-    secure: I015tYjIZye3U6WbETXhw5yM51Sl/o7DIlJtXcnhToJ8B9ZNrjIZDfip7FuRVFI4rVd1oNGRS8BI7nHyAUhadV1jY8+5nz+g6QxqKRroqL+sCWIAen3zlHbL44Dbp27q9QfdJ+cgx/7BURwyFY1cgVaIJ4s9AVjRbU2TS1VRW0Oh3FP/zt0hcyc/ZaP3TOXRG3/W7mm31Hj3ZygIBQtmO8mp2IogYvLGCuW+YiNcdsIuCkfEB2fCDNOSS1FAtLYxjLq1s5W9/jEwzEtteWvjaHvok/2PATr7NurLJauJ+uMqfILRiqJM8qmjyAoQLbB1XDYJhUHCIUZWhTTurFXS+ge/2CpuM8/H8Y3mwq9++CcaOPes2CFJCqZM8PUEKP3SzeHfNsc9bu3pfqU6Q4Bqv1zo8z4hZ5tfTPHWvcs0ro2ow6cfGeB6XEnq9AWWdRAYuM9QIKU4jVUJmzOQ8nYOdSpPswy7iiOTOmXWGsF0xIELQIki0zYiladhtKtuB/RmDpV7deQYBO6fothNe+QQ7xhPy8VvzCVp5TJdZKhP9LKlV7JhqvxN/Mn0jD0pX5jlvxpei38OFyIu1wnrY7mM+RJgNxclhAiptq9U7qAPIbLrrbzOEmZV2T+V20w8gMBpqFLPGSgxl/J7Im/MwoIwJD0J6BhIVkZn+ohkAD8YlO0=
+    install: skip
+    script: skip
+    deploy:
+      provider: pypi
+      on:
+        tags: true
+        all_branches: true
+      user: jaraco
+      password:
+        secure: I015tYjIZye3U6WbETXhw5yM51Sl/o7DIlJtXcnhToJ8B9ZNrjIZDfip7FuRVFI4rVd1oNGRS8BI7nHyAUhadV1jY8+5nz+g6QxqKRroqL+sCWIAen3zlHbL44Dbp27q9QfdJ+cgx/7BURwyFY1cgVaIJ4s9AVjRbU2TS1VRW0Oh3FP/zt0hcyc/ZaP3TOXRG3/W7mm31Hj3ZygIBQtmO8mp2IogYvLGCuW+YiNcdsIuCkfEB2fCDNOSS1FAtLYxjLq1s5W9/jEwzEtteWvjaHvok/2PATr7NurLJauJ+uMqfILRiqJM8qmjyAoQLbB1XDYJhUHCIUZWhTTurFXS+ge/2CpuM8/H8Y3mwq9++CcaOPes2CFJCqZM8PUEKP3SzeHfNsc9bu3pfqU6Q4Bqv1zo8z4hZ5tfTPHWvcs0ro2ow6cfGeB6XEnq9AWWdRAYuM9QIKU4jVUJmzOQ8nYOdSpPswy7iiOTOmXWGsF0xIELQIki0zYiladhtKtuB/RmDpV7deQYBO6fothNe+QQ7xhPy8VvzCVp5TJdZKhP9LKlV7JhqvxN/Mn0jD0pX5jlvxpei38OFyIu1wnrY7mM+RJgNxclhAiptq9U7qAPIbLrrbzOEmZV2T+V20w8gMBpqFLPGSgxl/J7Im/MwoIwJD0J6BhIVkZn+ohkAD8YlO0=
+      distributions: dists
+      skip_cleanup: true
+      skip_upload_docs: true
+
 notifications:
   slack:
     secure: YWKVGWFFQA41qbZA/rxytuCmc2j3Cvzg+b7KEX+Np3yuyeyxSH7eMa/qDMH3t1FxvNDLZg0IQdb2Sw6PQUN66l4+hDUjhi165xsFOWqcIfUt2sMaHn6OqQtSBcTG9Eh+zglb2cvGKpdHySSMX8l3ysMhYfqRwu6HYXYY47Vp8jMYw5Yi0NhAXw9nfsUAxxlBbnSCKArdkndReuqoax5iNIUcVCytEZTthmnz82PbUDnrY3pNnEN9P3Uu1sykYGrh9q22q+iEK+B6/eLfVgKtXhpcprCeCLelVlUVJ261RowFlW/iKH8FVyK/UJI7GjVbvXdaAAJ/tDO21RRmG+nna353s6QU0mmZ+z3/m89eBmSoDbWRGMjxR4+dv21WIWKfSdq4YJEKuTlCH51gvsZ7flzdSbK5I0jTsvUgru9Wx4vNx54dnlSY4UaS6BY+czVgFVe/33EIlaalYBovk1npFE8cwrtL71WK+NPpTo9hO6S2QcX3HGaK2GRipCgr7hybB0VYGyu4Rlrt9+DQ6HomBxybhlaNIWu+5HJT+Awx04CgCS6KQUst6BrDQ8pe+Q2NEArlCahimo7IVoPa5hle4CyZbo/W67uBT9skE7tRk0xrd58BGPbfkMILaxdZk/NUxmMUgCLqei3bZKMEldDM/oQHGW+vcSxxNhpoKkkqvxw=
+
+cache: pip
+
+install:
+- pip install tox tox-venv
+
+script: tox
